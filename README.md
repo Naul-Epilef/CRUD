@@ -1,1 +1,1 @@
-1º rodar comando: yarn
+Just a CRUD
