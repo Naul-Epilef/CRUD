@@ -3,7 +3,7 @@
   "host": "localhost",
   "port": 5432,
   "username": "postgres",
-  "password": "docker",
+  "password": "crud",
   "database": "crud",
   "synchronize": true,
   "logging": false,

@@ -17,8 +17,6 @@ app.post("/", async (request, response) => {
   const { name } = request.body;
   const userRepository = getRepository(User);
 
-  console.log(v4());
-
   const newUser = await userRepository.create({
     id: v4(),
     name,
