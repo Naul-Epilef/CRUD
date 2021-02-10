@@ -1,28 +1,24 @@
 import { Router } from "express";
-import { getRepository } from "typeorm";
-import { v4 } from "uuid";
+
 import User from "../models/User";
+
+import CreateUser from "../services/User/Create";
+import Delete from "../services/User/Delete";
+import ListAll from "../services/User/ListAll";
+import Update from "../services/User/Update";
 
 const app = Router();
 
 app.get("/", async (request, response) => {
-  const userRepository = getRepository(User);
-
-  const users = await userRepository.find();
+  const users = (await new ListAll().execute()) as User[];
 
   response.json(users);
 });
 
 app.post("/", async (request, response) => {
   const { name } = request.body;
-  const userRepository = getRepository(User);
 
-  const newUser = await userRepository.create({
-    id: v4(),
-    name,
-  });
-
-  await userRepository.save(newUser);
+  const newUser = (await new CreateUser().execute({ name })) as User;
 
   response.json(newUser);
 });
@@ -31,24 +27,17 @@ app.put("/:id", async (request, response) => {
   const { id } = request.params;
   const { name } = request.body;
 
-  const userRepository = getRepository(User);
+  const user = (await new Update().execute({ id, name })) as User;
 
-  const user = (await userRepository.findOne(id)) as User;
-
-  user.name = name;
-
-  userRepository.save(user);
   response.json(user);
 });
 
-app.delete("/:id", (request, response) => {
+app.delete("/:id", async (request, response) => {
   const { id } = request.params;
 
-  const userRepository = getRepository(User);
+  const res = await new Delete().execute({ id });
 
-  userRepository.delete(id);
-
-  response.json({ message: "Usuário deletado" });
+  response.json(res);
 });
 
 export default app;
